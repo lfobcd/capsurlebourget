@@ -10,33 +10,206 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as CalculateurRouteImport } from './routes/calculateur'
+import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
+import { Route as MesTrajetsRouteImport } from './routes/mes-trajets'
+import { Route as MessagesRouteImport } from './routes/messages'
+import { Route as PlanAccesRouteImport } from './routes/plan-acces'
+import { Route as PourquoiRouteImport } from './routes/pourquoi'
+import { Route as ProfilRouteImport } from './routes/profil'
+import { Route as ProposerRouteImport } from './routes/proposer'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SignalerRouteImport } from './routes/signaler'
+import { Route as TrajetsIndexRouteImport } from './routes/trajets.index'
+import { Route as TrajetsIdRouteImport } from './routes/trajets.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CalculateurRoute = CalculateurRouteImport.update({
+  id: '/calculateur',
+  path: '/calculateur',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
+  id: '/mentions-legales',
+  path: '/mentions-legales',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MesTrajetsRoute = MesTrajetsRouteImport.update({
+  id: '/mes-trajets',
+  path: '/mes-trajets',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MessagesRoute = MessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlanAccesRoute = PlanAccesRouteImport.update({
+  id: '/plan-acces',
+  path: '/plan-acces',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PourquoiRoute = PourquoiRouteImport.update({
+  id: '/pourquoi',
+  path: '/pourquoi',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfilRoute = ProfilRouteImport.update({
+  id: '/profil',
+  path: '/profil',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProposerRoute = ProposerRouteImport.update({
+  id: '/proposer',
+  path: '/proposer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignalerRoute = SignalerRouteImport.update({
+  id: '/signaler',
+  path: '/signaler',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TrajetsIndexRoute = TrajetsIndexRouteImport.update({
+  id: '/trajets/',
+  path: '/trajets/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TrajetsIdRoute = TrajetsIdRouteImport.update({
+  id: '/trajets/$id',
+  path: '/trajets/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/calculateur': typeof CalculateurRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
+  '/mes-trajets': typeof MesTrajetsRoute
+  '/messages': typeof MessagesRoute
+  '/plan-acces': typeof PlanAccesRoute
+  '/pourquoi': typeof PourquoiRoute
+  '/profil': typeof ProfilRoute
+  '/proposer': typeof ProposerRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/signaler': typeof SignalerRoute
+  '/trajets/$id': typeof TrajetsIdRoute
+  '/trajets/': typeof TrajetsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/calculateur': typeof CalculateurRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
+  '/mes-trajets': typeof MesTrajetsRoute
+  '/messages': typeof MessagesRoute
+  '/plan-acces': typeof PlanAccesRoute
+  '/pourquoi': typeof PourquoiRoute
+  '/profil': typeof ProfilRoute
+  '/proposer': typeof ProposerRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/signaler': typeof SignalerRoute
+  '/trajets/$id': typeof TrajetsIdRoute
+  '/trajets': typeof TrajetsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/calculateur': typeof CalculateurRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
+  '/mes-trajets': typeof MesTrajetsRoute
+  '/messages': typeof MessagesRoute
+  '/plan-acces': typeof PlanAccesRoute
+  '/pourquoi': typeof PourquoiRoute
+  '/profil': typeof ProfilRoute
+  '/proposer': typeof ProposerRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/signaler': typeof SignalerRoute
+  '/trajets/$id': typeof TrajetsIdRoute
+  '/trajets/': typeof TrajetsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/calculateur'
+    | '/mentions-legales'
+    | '/mes-trajets'
+    | '/messages'
+    | '/plan-acces'
+    | '/pourquoi'
+    | '/profil'
+    | '/proposer'
+    | '/reset-password'
+    | '/signaler'
+    | '/trajets/$id'
+    | '/trajets/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/calculateur'
+    | '/mentions-legales'
+    | '/mes-trajets'
+    | '/messages'
+    | '/plan-acces'
+    | '/pourquoi'
+    | '/profil'
+    | '/proposer'
+    | '/reset-password'
+    | '/signaler'
+    | '/trajets/$id'
+    | '/trajets'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/calculateur'
+    | '/mentions-legales'
+    | '/mes-trajets'
+    | '/messages'
+    | '/plan-acces'
+    | '/pourquoi'
+    | '/profil'
+    | '/proposer'
+    | '/reset-password'
+    | '/signaler'
+    | '/trajets/$id'
+    | '/trajets/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
+  CalculateurRoute: typeof CalculateurRoute
+  MentionsLegalesRoute: typeof MentionsLegalesRoute
+  MesTrajetsRoute: typeof MesTrajetsRoute
+  MessagesRoute: typeof MessagesRoute
+  PlanAccesRoute: typeof PlanAccesRoute
+  PourquoiRoute: typeof PourquoiRoute
+  ProfilRoute: typeof ProfilRoute
+  ProposerRoute: typeof ProposerRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  SignalerRoute: typeof SignalerRoute
+  TrajetsIdRoute: typeof TrajetsIdRoute
+  TrajetsIndexRoute: typeof TrajetsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +221,115 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/calculateur': {
+      id: '/calculateur'
+      path: '/calculateur'
+      fullPath: '/calculateur'
+      preLoaderRoute: typeof CalculateurRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mentions-legales': {
+      id: '/mentions-legales'
+      path: '/mentions-legales'
+      fullPath: '/mentions-legales'
+      preLoaderRoute: typeof MentionsLegalesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mes-trajets': {
+      id: '/mes-trajets'
+      path: '/mes-trajets'
+      fullPath: '/mes-trajets'
+      preLoaderRoute: typeof MesTrajetsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/messages': {
+      id: '/messages'
+      path: '/messages'
+      fullPath: '/messages'
+      preLoaderRoute: typeof MessagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/plan-acces': {
+      id: '/plan-acces'
+      path: '/plan-acces'
+      fullPath: '/plan-acces'
+      preLoaderRoute: typeof PlanAccesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pourquoi': {
+      id: '/pourquoi'
+      path: '/pourquoi'
+      fullPath: '/pourquoi'
+      preLoaderRoute: typeof PourquoiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profil': {
+      id: '/profil'
+      path: '/profil'
+      fullPath: '/profil'
+      preLoaderRoute: typeof ProfilRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/proposer': {
+      id: '/proposer'
+      path: '/proposer'
+      fullPath: '/proposer'
+      preLoaderRoute: typeof ProposerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signaler': {
+      id: '/signaler'
+      path: '/signaler'
+      fullPath: '/signaler'
+      preLoaderRoute: typeof SignalerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/trajets/': {
+      id: '/trajets/'
+      path: '/trajets'
+      fullPath: '/trajets/'
+      preLoaderRoute: typeof TrajetsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/trajets/$id': {
+      id: '/trajets/$id'
+      path: '/trajets/$id'
+      fullPath: '/trajets/$id'
+      preLoaderRoute: typeof TrajetsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
+  CalculateurRoute: CalculateurRoute,
+  MentionsLegalesRoute: MentionsLegalesRoute,
+  MesTrajetsRoute: MesTrajetsRoute,
+  MessagesRoute: MessagesRoute,
+  PlanAccesRoute: PlanAccesRoute,
+  PourquoiRoute: PourquoiRoute,
+  ProfilRoute: ProfilRoute,
+  ProposerRoute: ProposerRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  SignalerRoute: SignalerRoute,
+  TrajetsIdRoute: TrajetsIdRoute,
+  TrajetsIndexRoute: TrajetsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
