@@ -13,6 +13,8 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CalculateurRouteImport } from './routes/calculateur'
 import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
+import { Route as MesTrajetsRouteImport } from './routes/mes-trajets'
+import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as PlanAccesRouteImport } from './routes/plan-acces'
 import { Route as PourquoiRouteImport } from './routes/pourquoi'
 import { Route as ProfilRouteImport } from './routes/profil'
@@ -40,6 +42,16 @@ const CalculateurRoute = CalculateurRouteImport.update({
 const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
   id: '/mentions-legales',
   path: '/mentions-legales',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MesTrajetsRoute = MesTrajetsRouteImport.update({
+  id: '/mes-trajets',
+  path: '/mes-trajets',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MessagesRoute = MessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PlanAccesRoute = PlanAccesRouteImport.update({
@@ -88,6 +100,8 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/calculateur': typeof CalculateurRoute
   '/mentions-legales': typeof MentionsLegalesRoute
+  '/mes-trajets': typeof MesTrajetsRoute
+  '/messages': typeof MessagesRoute
   '/plan-acces': typeof PlanAccesRoute
   '/pourquoi': typeof PourquoiRoute
   '/profil': typeof ProfilRoute
@@ -102,6 +116,8 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/calculateur': typeof CalculateurRoute
   '/mentions-legales': typeof MentionsLegalesRoute
+  '/mes-trajets': typeof MesTrajetsRoute
+  '/messages': typeof MessagesRoute
   '/plan-acces': typeof PlanAccesRoute
   '/pourquoi': typeof PourquoiRoute
   '/profil': typeof ProfilRoute
@@ -117,6 +133,8 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/calculateur': typeof CalculateurRoute
   '/mentions-legales': typeof MentionsLegalesRoute
+  '/mes-trajets': typeof MesTrajetsRoute
+  '/messages': typeof MessagesRoute
   '/plan-acces': typeof PlanAccesRoute
   '/pourquoi': typeof PourquoiRoute
   '/profil': typeof ProfilRoute
@@ -133,6 +151,8 @@ export interface FileRouteTypes {
     | '/auth'
     | '/calculateur'
     | '/mentions-legales'
+    | '/mes-trajets'
+    | '/messages'
     | '/plan-acces'
     | '/pourquoi'
     | '/profil'
@@ -147,6 +167,8 @@ export interface FileRouteTypes {
     | '/auth'
     | '/calculateur'
     | '/mentions-legales'
+    | '/mes-trajets'
+    | '/messages'
     | '/plan-acces'
     | '/pourquoi'
     | '/profil'
@@ -161,6 +183,8 @@ export interface FileRouteTypes {
     | '/auth'
     | '/calculateur'
     | '/mentions-legales'
+    | '/mes-trajets'
+    | '/messages'
     | '/plan-acces'
     | '/pourquoi'
     | '/profil'
@@ -176,6 +200,8 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   CalculateurRoute: typeof CalculateurRoute
   MentionsLegalesRoute: typeof MentionsLegalesRoute
+  MesTrajetsRoute: typeof MesTrajetsRoute
+  MessagesRoute: typeof MessagesRoute
   PlanAccesRoute: typeof PlanAccesRoute
   PourquoiRoute: typeof PourquoiRoute
   ProfilRoute: typeof ProfilRoute
@@ -214,6 +240,20 @@ declare module '@tanstack/react-router' {
       path: '/mentions-legales'
       fullPath: '/mentions-legales'
       preLoaderRoute: typeof MentionsLegalesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mes-trajets': {
+      id: '/mes-trajets'
+      path: '/mes-trajets'
+      fullPath: '/mes-trajets'
+      preLoaderRoute: typeof MesTrajetsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/messages': {
+      id: '/messages'
+      path: '/messages'
+      fullPath: '/messages'
+      preLoaderRoute: typeof MessagesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/plan-acces': {
@@ -280,6 +320,8 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   CalculateurRoute: CalculateurRoute,
   MentionsLegalesRoute: MentionsLegalesRoute,
+  MesTrajetsRoute: MesTrajetsRoute,
+  MessagesRoute: MessagesRoute,
   PlanAccesRoute: PlanAccesRoute,
   PourquoiRoute: PourquoiRoute,
   ProfilRoute: ProfilRoute,
