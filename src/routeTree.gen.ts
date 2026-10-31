@@ -10,12 +10,48 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as CalculateurRouteImport } from './routes/calculateur'
+import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
+import { Route as PourquoiRouteImport } from './routes/pourquoi'
+import { Route as ProposerRouteImport } from './routes/proposer'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as TrajetsIndexRouteImport } from './routes/trajets.index'
 import { Route as TrajetsIdRouteImport } from './routes/trajets.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CalculateurRoute = CalculateurRouteImport.update({
+  id: '/calculateur',
+  path: '/calculateur',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
+  id: '/mentions-legales',
+  path: '/mentions-legales',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PourquoiRoute = PourquoiRouteImport.update({
+  id: '/pourquoi',
+  path: '/pourquoi',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProposerRoute = ProposerRouteImport.update({
+  id: '/proposer',
+  path: '/proposer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TrajetsIndexRoute = TrajetsIndexRouteImport.update({
@@ -31,30 +67,82 @@ const TrajetsIdRoute = TrajetsIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/calculateur': typeof CalculateurRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
+  '/pourquoi': typeof PourquoiRoute
+  '/proposer': typeof ProposerRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/trajets/$id': typeof TrajetsIdRoute
   '/trajets/': typeof TrajetsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/calculateur': typeof CalculateurRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
+  '/pourquoi': typeof PourquoiRoute
+  '/proposer': typeof ProposerRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/trajets/$id': typeof TrajetsIdRoute
   '/trajets': typeof TrajetsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/calculateur': typeof CalculateurRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
+  '/pourquoi': typeof PourquoiRoute
+  '/proposer': typeof ProposerRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/trajets/$id': typeof TrajetsIdRoute
   '/trajets/': typeof TrajetsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/trajets/$id' | '/trajets/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/calculateur'
+    | '/mentions-legales'
+    | '/pourquoi'
+    | '/proposer'
+    | '/reset-password'
+    | '/trajets/$id'
+    | '/trajets/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/trajets/$id' | '/trajets'
-  id: '__root__' | '/' | '/trajets/$id' | '/trajets/'
+  to:
+    | '/'
+    | '/auth'
+    | '/calculateur'
+    | '/mentions-legales'
+    | '/pourquoi'
+    | '/proposer'
+    | '/reset-password'
+    | '/trajets/$id'
+    | '/trajets'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/calculateur'
+    | '/mentions-legales'
+    | '/pourquoi'
+    | '/proposer'
+    | '/reset-password'
+    | '/trajets/$id'
+    | '/trajets/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
+  CalculateurRoute: typeof CalculateurRoute
+  MentionsLegalesRoute: typeof MentionsLegalesRoute
+  PourquoiRoute: typeof PourquoiRoute
+  ProposerRoute: typeof ProposerRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   TrajetsIdRoute: typeof TrajetsIdRoute
   TrajetsIndexRoute: typeof TrajetsIndexRoute
 }
@@ -66,6 +154,48 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/calculateur': {
+      id: '/calculateur'
+      path: '/calculateur'
+      fullPath: '/calculateur'
+      preLoaderRoute: typeof CalculateurRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mentions-legales': {
+      id: '/mentions-legales'
+      path: '/mentions-legales'
+      fullPath: '/mentions-legales'
+      preLoaderRoute: typeof MentionsLegalesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pourquoi': {
+      id: '/pourquoi'
+      path: '/pourquoi'
+      fullPath: '/pourquoi'
+      preLoaderRoute: typeof PourquoiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/proposer': {
+      id: '/proposer'
+      path: '/proposer'
+      fullPath: '/proposer'
+      preLoaderRoute: typeof ProposerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/trajets/': {
@@ -87,6 +217,12 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
+  CalculateurRoute: CalculateurRoute,
+  MentionsLegalesRoute: MentionsLegalesRoute,
+  PourquoiRoute: PourquoiRoute,
+  ProposerRoute: ProposerRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   TrajetsIdRoute: TrajetsIdRoute,
   TrajetsIndexRoute: TrajetsIndexRoute,
 }
