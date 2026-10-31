@@ -1,5 +1,13 @@
 {
   "version": "7",
   "dialect": "postgresql",
-  "entries": []
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1793444155203,
+      "tag": "0000_cap_sur_le_bourget_schema",
+      "breakpoints": true
+    }
+  ]
 }
