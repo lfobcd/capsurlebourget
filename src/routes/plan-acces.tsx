@@ -25,8 +25,8 @@ export const Route = createFileRoute("/plan-acces")({
 const CENTER = { x: 50, y: 32 };
 
 function MapPage() {
-  const [sel, setSel] = useState(AXES[0].id);
-  const axis = AXES.find((a) => a.id === sel)!;
+  const [sel, setSel] = useState<string>(AXES[0]!.id);
+  const axis = (AXES.find((a) => a.id === sel) ?? AXES[0])!;
   const { data: trips } = useQuery(upcomingTripsQuery());
   const axisCities = new Set(CITIES.filter((c) => c.axis === sel).map((c) => normalize(c.name)));
   const list = (trips ?? []).filter((t) => t.axis === sel || axisCities.has(normalize(t.departure_city)));

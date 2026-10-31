@@ -31,7 +31,7 @@ function Home() {
   useTripsRealtime();
   const navigate = useNavigate();
   const [ville, setVille] = useState("");
-  const [date, setDate] = useState(EVENT.dateISO);
+  const [date, setDate] = useState<string>(EVENT.dateISO);
   const [places, setPlaces] = useState(1);
   const { data: trips, isLoading } = useQuery(upcomingTripsQuery());
   const preview = (trips ?? []).filter((t) => t.seats_available > 0).slice(0, 3);

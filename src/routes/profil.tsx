@@ -65,15 +65,15 @@ function ProfileForm() {
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!f.first_name.trim() || !f.last_name.trim()) return toast.error("Prénom et nom sont requis.");
-    if (!isValidFrenchPhone(f.phone)) return toast.error("Numéro de téléphone français invalide (ex. 06 12 34 56 78).");
+    if (!f.first_name.trim() || !f.last_name.trim()) { toast.error("Prénom et nom sont requis."); return; }
+    if (!isValidFrenchPhone(f.phone)) { toast.error("Numéro de téléphone français invalide (ex. 06 12 34 56 78)."); return; }
     setSaving(true);
     const [a, b] = await Promise.all([
       supabase.from("profiles").upsert({ id: uid, first_name: f.first_name.trim().slice(0, 50), vehicle: f.vehicle.trim().slice(0, 80) || null, city: f.city.trim().slice(0, 80) || null, bio: f.bio.trim().slice(0, 500) || null, updated_at: new Date().toISOString() }),
       supabase.from("profile_private").upsert({ user_id: uid, last_name: f.last_name.trim().slice(0, 50), phone: formatFrenchPhone(f.phone), updated_at: new Date().toISOString() }),
     ]);
     setSaving(false);
-    if (a.error || b.error) return toast.error(friendlyError(a.error ?? b.error));
+    if (a.error || b.error) { toast.error(friendlyError(a.error ?? b.error)); return; }
     toast.success("Profil enregistré !");
     qc.invalidateQueries({ queryKey: ["profile", uid] });
   };

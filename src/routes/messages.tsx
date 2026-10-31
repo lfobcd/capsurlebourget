@@ -78,7 +78,7 @@ function Inbox() {
   });
 
   useEffect(() => {
-    if (!c) return;
+    if (!c) return undefined;
     supabase.rpc("mark_conversation_read", { _conversation_id: c }).then(() => {
       qc.invalidateQueries({ queryKey: ["unread", uid] });
     });
@@ -101,7 +101,7 @@ function Inbox() {
   const send = async (body: string) => {
     const t = body.trim();
     if (!t || !c) return;
-    if (!emailConfirmed) return toast.warning("Confirme ton email pour pouvoir écrire.");
+    if (!emailConfirmed) { toast.warning("Confirme ton email pour pouvoir écrire."); return; }
     setText("");
     const { error } = await supabase.from("messages").insert({ conversation_id: c, sender_id: uid, body: t.slice(0, 2000) });
     if (error) {

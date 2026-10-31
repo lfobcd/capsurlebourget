@@ -43,12 +43,12 @@ function ResetPage() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     const p = passwordSchema.safeParse(pw);
-    if (!p.success) return toast.error(p.error.issues[0].message);
-    if (pw !== pw2) return toast.error("Les deux mots de passe ne correspondent pas.");
+    if (!p.success) { toast.error(p.error.issues[0]?.message ?? "Valeur invalide."); return; }
+    if (pw !== pw2) { toast.error("Les deux mots de passe ne correspondent pas."); return; }
     setLoading(true);
     const { error } = await supabase.auth.updateUser({ password: pw });
     setLoading(false);
-    if (error) return toast.error(friendlyError(error));
+    if (error) { toast.error(friendlyError(error)); return; }
     toast.success("Mot de passe mis à jour !");
     navigate({ to: "/profil" });
   };

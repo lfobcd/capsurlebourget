@@ -8,7 +8,7 @@ import { formatEuro } from "@/lib/pricing";
 import { StarRating, Tag } from "@/components/common";
 import { cn } from "@/lib/utils";
 
-export function TripCard({ trip, rating }: { trip: TripWithDriver; rating?: Rating }) {
+export function TripCard({ trip, rating }: { trip: TripWithDriver; rating?: Rating | undefined }) {
   const { from, to } = cityOrigin(trip);
   const full = trip.seats_available === 0;
   return (

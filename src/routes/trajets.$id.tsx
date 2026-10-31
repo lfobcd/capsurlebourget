@@ -82,7 +82,7 @@ function TripDetail() {
 
   const book = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase.rpc("book_trip", { _trip_id: id, _seats: seats, _message: message.trim() || undefined });
+      const { error } = await supabase.rpc("book_trip", message.trim() ? { _trip_id: id, _seats: seats, _message: message.trim() } : { _trip_id: id, _seats: seats });
       if (error) throw error;
     },
     onSuccess: () => {

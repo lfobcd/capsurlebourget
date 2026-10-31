@@ -82,8 +82,8 @@ function AuthPage() {
         toast.success("Compte créé ! Vérifie ta boîte mail.");
       } else if (mode === "login") {
         const email = emailSchema.safeParse(form.email);
-        if (!email.success) return setErrors({ email: email.error.issues[0].message });
-        if (!form.password) return setErrors({ password: "Indique ton mot de passe." });
+        if (!email.success) { setErrors({ email: email.error.issues[0]?.message ?? "Valeur invalide." }); return; }
+        if (!form.password) { setErrors({ password: "Indique ton mot de passe." }); return; }
         const { error } = await supabase.auth.signInWithPassword({ email: email.data, password: form.password });
         if (error) {
           if (/Email not confirmed/i.test(error.message)) setUnconfirmed(email.data);
@@ -93,7 +93,7 @@ function AuthPage() {
         navigate({ to: "/" });
       } else {
         const email = emailSchema.safeParse(form.email);
-        if (!email.success) return setErrors({ email: email.error.issues[0].message });
+        if (!email.success) { setErrors({ email: email.error.issues[0]?.message ?? "Valeur invalide." }); return; }
         const { error } = await supabase.auth.resetPasswordForEmail(email.data, { redirectTo: `${window.location.origin}/reset-password` });
         if (error) throw error;
         setSentTo(email.data);

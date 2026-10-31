@@ -52,7 +52,7 @@ function ReportForm() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     const d = details.trim();
-    if (d.length < 10) return toast.error("Décris le problème en quelques mots (10 caractères minimum).");
+    if (d.length < 10) { toast.error("Décris le problème en quelques mots (10 caractères minimum)."); return; }
     setLoading(true);
     const { error } = await supabase.from("reports").insert({
       reporter_id: user!.id,
@@ -63,7 +63,7 @@ function ReportForm() {
       details: d.slice(0, 2000),
     });
     setLoading(false);
-    if (error) return toast.error(friendlyError(error));
+    if (error) { toast.error(friendlyError(error)); return; }
     toast.success("Merci, ton signalement a bien été transmis.");
     navigate({ to: "/" });
   };

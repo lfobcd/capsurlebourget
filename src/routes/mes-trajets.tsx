@@ -107,7 +107,7 @@ function MyTrips() {
   });
   const openChat = async (tripId: string, other: string) => {
     const { data, error } = await supabase.rpc("get_or_create_conversation", { _trip_id: tripId, _other: other });
-    if (error) return toast.error(friendlyError(error));
+    if (error) { toast.error(friendlyError(error)); return; }
     navigate({ to: "/messages", search: { c: data } });
   };
 
@@ -188,7 +188,7 @@ function MyTrips() {
                       <span className="font-semibold">{b.passenger?.first_name ?? "Membre"}</span> · {b.seats} place(s) <Tag tone={STATUS[b.status].t}>{STATUS[b.status].l}</Tag>
                       {b.message && <p className="mt-1 text-muted-foreground">« {b.message} »</p>}
                       {b.status === "confirmed" && phones.data?.[b.passenger_id] && (
-                        <a href={`tel:${phones.data[b.passenger_id].replace(/\s/g, "")}`} className="mt-1 flex items-center gap-2 font-semibold text-success-strong">
+                        <a href={`tel:${phones.data[b.passenger_id]!.replace(/\s/g, "")}`} className="mt-1 flex items-center gap-2 font-semibold text-success-strong">
                           <Phone className="h-4 w-4" /> {phones.data[b.passenger_id]}
                         </a>
                       )}

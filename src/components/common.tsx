@@ -65,7 +65,7 @@ export function CostReminder({ className }: { className?: string }) {
   );
 }
 
-export function StarRating({ avg, count, className }: { avg?: number; count?: number; className?: string }) {
+export function StarRating({ avg, count, className }: { avg?: number | undefined; count?: number | undefined; className?: string }) {
   if (!count) return <span className={cn("text-xs text-muted-foreground", className)}>Nouveau membre</span>;
   return (
     <span className={cn("inline-flex items-center gap-1 text-xs", className)}>
