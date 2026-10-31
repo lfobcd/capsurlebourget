@@ -13,9 +13,12 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CalculateurRouteImport } from './routes/calculateur'
 import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
+import { Route as PlanAccesRouteImport } from './routes/plan-acces'
 import { Route as PourquoiRouteImport } from './routes/pourquoi'
+import { Route as ProfilRouteImport } from './routes/profil'
 import { Route as ProposerRouteImport } from './routes/proposer'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SignalerRouteImport } from './routes/signaler'
 import { Route as TrajetsIndexRouteImport } from './routes/trajets.index'
 import { Route as TrajetsIdRouteImport } from './routes/trajets.$id'
 
@@ -39,9 +42,19 @@ const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
   path: '/mentions-legales',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PlanAccesRoute = PlanAccesRouteImport.update({
+  id: '/plan-acces',
+  path: '/plan-acces',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PourquoiRoute = PourquoiRouteImport.update({
   id: '/pourquoi',
   path: '/pourquoi',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfilRoute = ProfilRouteImport.update({
+  id: '/profil',
+  path: '/profil',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProposerRoute = ProposerRouteImport.update({
@@ -52,6 +65,11 @@ const ProposerRoute = ProposerRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignalerRoute = SignalerRouteImport.update({
+  id: '/signaler',
+  path: '/signaler',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TrajetsIndexRoute = TrajetsIndexRouteImport.update({
@@ -70,9 +88,12 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/calculateur': typeof CalculateurRoute
   '/mentions-legales': typeof MentionsLegalesRoute
+  '/plan-acces': typeof PlanAccesRoute
   '/pourquoi': typeof PourquoiRoute
+  '/profil': typeof ProfilRoute
   '/proposer': typeof ProposerRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/signaler': typeof SignalerRoute
   '/trajets/$id': typeof TrajetsIdRoute
   '/trajets/': typeof TrajetsIndexRoute
 }
@@ -81,9 +102,12 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/calculateur': typeof CalculateurRoute
   '/mentions-legales': typeof MentionsLegalesRoute
+  '/plan-acces': typeof PlanAccesRoute
   '/pourquoi': typeof PourquoiRoute
+  '/profil': typeof ProfilRoute
   '/proposer': typeof ProposerRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/signaler': typeof SignalerRoute
   '/trajets/$id': typeof TrajetsIdRoute
   '/trajets': typeof TrajetsIndexRoute
 }
@@ -93,9 +117,12 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/calculateur': typeof CalculateurRoute
   '/mentions-legales': typeof MentionsLegalesRoute
+  '/plan-acces': typeof PlanAccesRoute
   '/pourquoi': typeof PourquoiRoute
+  '/profil': typeof ProfilRoute
   '/proposer': typeof ProposerRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/signaler': typeof SignalerRoute
   '/trajets/$id': typeof TrajetsIdRoute
   '/trajets/': typeof TrajetsIndexRoute
 }
@@ -106,9 +133,12 @@ export interface FileRouteTypes {
     | '/auth'
     | '/calculateur'
     | '/mentions-legales'
+    | '/plan-acces'
     | '/pourquoi'
+    | '/profil'
     | '/proposer'
     | '/reset-password'
+    | '/signaler'
     | '/trajets/$id'
     | '/trajets/'
   fileRoutesByTo: FileRoutesByTo
@@ -117,9 +147,12 @@ export interface FileRouteTypes {
     | '/auth'
     | '/calculateur'
     | '/mentions-legales'
+    | '/plan-acces'
     | '/pourquoi'
+    | '/profil'
     | '/proposer'
     | '/reset-password'
+    | '/signaler'
     | '/trajets/$id'
     | '/trajets'
   id:
@@ -128,9 +161,12 @@ export interface FileRouteTypes {
     | '/auth'
     | '/calculateur'
     | '/mentions-legales'
+    | '/plan-acces'
     | '/pourquoi'
+    | '/profil'
     | '/proposer'
     | '/reset-password'
+    | '/signaler'
     | '/trajets/$id'
     | '/trajets/'
   fileRoutesById: FileRoutesById
@@ -140,9 +176,12 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   CalculateurRoute: typeof CalculateurRoute
   MentionsLegalesRoute: typeof MentionsLegalesRoute
+  PlanAccesRoute: typeof PlanAccesRoute
   PourquoiRoute: typeof PourquoiRoute
+  ProfilRoute: typeof ProfilRoute
   ProposerRoute: typeof ProposerRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  SignalerRoute: typeof SignalerRoute
   TrajetsIdRoute: typeof TrajetsIdRoute
   TrajetsIndexRoute: typeof TrajetsIndexRoute
 }
@@ -177,11 +216,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MentionsLegalesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/plan-acces': {
+      id: '/plan-acces'
+      path: '/plan-acces'
+      fullPath: '/plan-acces'
+      preLoaderRoute: typeof PlanAccesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pourquoi': {
       id: '/pourquoi'
       path: '/pourquoi'
       fullPath: '/pourquoi'
       preLoaderRoute: typeof PourquoiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profil': {
+      id: '/profil'
+      path: '/profil'
+      fullPath: '/profil'
+      preLoaderRoute: typeof ProfilRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/proposer': {
@@ -196,6 +249,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signaler': {
+      id: '/signaler'
+      path: '/signaler'
+      fullPath: '/signaler'
+      preLoaderRoute: typeof SignalerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/trajets/': {
@@ -220,9 +280,12 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   CalculateurRoute: CalculateurRoute,
   MentionsLegalesRoute: MentionsLegalesRoute,
+  PlanAccesRoute: PlanAccesRoute,
   PourquoiRoute: PourquoiRoute,
+  ProfilRoute: ProfilRoute,
   ProposerRoute: ProposerRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  SignalerRoute: SignalerRoute,
   TrajetsIdRoute: TrajetsIdRoute,
   TrajetsIndexRoute: TrajetsIndexRoute,
 }
