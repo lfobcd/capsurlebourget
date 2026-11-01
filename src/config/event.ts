@@ -63,6 +63,37 @@ export const MUSIC = {
   label: "L'Autoradio populaire",
   track: "Rød – L'Avenir en commun",
   youtubeId: "ysF7Tcw4HbY",
+  pitch: "La bande-son officieuse du convoi. Lance-la avant de prendre la route et chantez ensemble jusqu'au Bourget !",
+} as const;
+
+/**
+ * Règles d'envoi des alertes SMS / WhatsApp.
+ * Les limites chiffrées sont appliquées côté base (fonction request_contact_alert) : modifie les deux ensemble.
+ */
+export const CONTACT_RULES = {
+  maxPerBooking: 3,
+  minMinutesBetween: 30,
+  maxPerDay: 10,
+  quietHours: { from: 22, to: 8 },
+  rules: [
+    "Uniquement pour organiser ce trajet : aucun démarchage politique, commercial ou associatif.",
+    "Une alerte courte, pas une conversation : pour discuter, utilise la messagerie du site.",
+    "Pas d'envoi entre 22h et 8h, sauf le jour même du départ.",
+    "3 alertes maximum par réservation, espacées d'au moins 30 minutes (10 par jour au total).",
+    "Ne partage jamais ce numéro et efface-le après l'événement.",
+    "Tout abus peut être signalé et entraîner la suspension de ton compte.",
+  ],
+  privacyNote:
+    "Chaque alerte est enregistrée (qui, quand, pour quelle réservation) afin de protéger les membres contre le démarchage et le harcèlement.",
+} as const;
+
+export const REPORT_REASONS = {
+  prix_excessif: "Prix excessif",
+  spam: "Spam",
+  propos_inappropries: "Propos inappropriés",
+  faux_profil: "Faux profil",
+  securite: "Sécurité",
+  autre: "Autre",
 } as const;
 
 export const VIBES = [
