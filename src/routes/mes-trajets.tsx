@@ -3,7 +3,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { z } from "zod";
-import { BellRing, Car, MessageCircle, Pencil, Phone, Trash2 } from "lucide-react";
+import { BellRing, Car, Mail, MessageCircle, Pencil, Phone, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { friendlyError, useAuth } from "@/lib/auth";
 import { cityOrigin, type TripRow } from "@/lib/data";
@@ -183,6 +183,12 @@ function MyTrips() {
         )}
       </TabsContent>
       <TabsContent value="annonces" className="grid gap-4">
+        {(listings.data?.length ?? 0) > 0 && (
+          <div className="flex items-center gap-3 rounded-xl border border-hairline bg-card/60 px-4 py-3 text-xs text-muted-foreground">
+            <Mail className="h-4 w-4 shrink-0 text-warning" />
+            <span>Tu reçois un email à chaque nouvelle demande de réservation — pense à vérifier tes spams si tu ne le vois pas arriver.</span>
+          </div>
+        )}
         {(listings.data ?? []).map((t) => {
           const { from, to } = cityOrigin(t);
           return (
