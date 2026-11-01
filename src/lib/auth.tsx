@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { Session, User } from "@supabase/supabase-js";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
 interface AuthState {
@@ -70,6 +70,25 @@ export function useAuth() {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error("useAuth doit être utilisé dans AuthProvider");
   return ctx;
+}
+
+/** Rôle admin lu en base (jamais depuis le navigateur seul) ; sert uniquement à afficher les outils, la base vérifie chaque action. */
+export function useIsAdminQuery() {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: ["is-admin", user?.id],
+    enabled: !!user,
+    staleTime: 5 * 60_000,
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("has_role", { _user_id: user!.id, _role: "admin" });
+      if (error) return false;
+      return !!data;
+    },
+  });
+}
+
+export function useIsAdmin() {
+  return useIsAdminQuery().data === true;
 }
 
 /** Traduit les erreurs techniques en messages bienveillants. */
