@@ -13,7 +13,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AuthProvider } from "@/lib/auth";
-import { Footer, Header, MobileNav, TopBanner } from "@/components/layout/SiteChrome";
+import { Footer, Header, LiveNotifications, MobileNav, TopBanner } from "@/components/layout/SiteChrome";
 import { MusicPlayer } from "@/components/layout/MusicPlayer";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -126,6 +126,7 @@ function RootComponent() {
         </div>
         <MobileNav />
         <MusicPlayer />
+        <LiveNotifications />
         <Toaster position="top-center" theme="dark" richColors />
       </AuthProvider>
     </QueryClientProvider>

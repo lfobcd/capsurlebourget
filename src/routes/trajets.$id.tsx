@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
@@ -27,6 +28,7 @@ import { cityOrigin, ratingsQuery, reviewsForQuery, tripQuery, useTripsRealtime 
 import { fmtDateLong, fmtTime } from "@/lib/format";
 import { formatEuro } from "@/lib/pricing";
 import { friendlyError, useAuth, useIsAdmin } from "@/lib/auth";
+import { sendBookingRequestEmail } from "@/lib/notifications.functions";
 import { CostReminder, EarlyTip, EmptyState, Page, Spinner, StarRating, Tag } from "@/components/common";
 import { ContactAlertDialog } from "@/components/ContactAlertDialog";
 import { Button } from "@/components/ui/button";
@@ -61,6 +63,7 @@ function TripDetail() {
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertIntro, setAlertIntro] = useState<string | undefined>(undefined);
   const [newBookingId, setNewBookingId] = useState<string | undefined>(undefined);
+  const notifyBookingRequest = useServerFn(sendBookingRequestEmail);
 
   const { data: trip, isLoading } = useQuery(tripQuery(id));
   const driverId = trip?.driver_id ?? "";
@@ -102,6 +105,7 @@ function TripDetail() {
       setAlertOpen(true);
       qc.invalidateQueries({ queryKey: ["my-booking"] });
       qc.invalidateQueries({ queryKey: ["trips"] });
+      notifyBookingRequest({ data: { bookingId: bid } }).catch(() => {});
     },
     onError: (e) => toast.error(friendlyError(e)),
   });

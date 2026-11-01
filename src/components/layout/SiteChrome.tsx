@@ -3,9 +3,16 @@ import { motion } from "framer-motion";
 import { Home, Search, Plus, MessageCircle, User, LogOut, Car, ShieldAlert } from "lucide-react";
 import { EVENT, LEGAL } from "@/config/event";
 import { useAuth, useIsAdmin } from "@/lib/auth";
-import { useUnreadCount } from "@/lib/data";
+import { useLiveNotifications, useUnreadCount } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+
+/** Monte les notifications temps réel (messages, demandes de réservation) pour l'utilisateur connecté. */
+export function LiveNotifications() {
+  const { user } = useAuth();
+  useLiveNotifications(user?.id);
+  return null;
+}
 
 export function TopBanner() {
   return (
