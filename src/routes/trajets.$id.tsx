@@ -24,8 +24,9 @@ import { LUGGAGE, TRIP_TYPES, VIBES } from "@/config/event";
 import { cityOrigin, ratingsQuery, reviewsForQuery, tripQuery, useTripsRealtime } from "@/lib/data";
 import { fmtDateLong, fmtTime } from "@/lib/format";
 import { formatEuro } from "@/lib/pricing";
-import { friendlyError, useAuth } from "@/lib/auth";
+import { friendlyError, useAuth, useIsAdmin } from "@/lib/auth";
 import { CostReminder, EarlyTip, EmptyState, Page, Spinner, StarRating, Tag } from "@/components/common";
+import { ContactAlertDialog } from "@/components/ContactAlertDialog";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
@@ -49,11 +50,14 @@ function TripDetail() {
   useTripsRealtime();
   const { id } = Route.useParams();
   const { user, emailConfirmed } = useAuth();
+  const isAdmin = useIsAdmin();
   const navigate = useNavigate();
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
   const [seats, setSeats] = useState(1);
   const [message, setMessage] = useState("");
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertIntro, setAlertIntro] = useState<string | undefined>(undefined);
 
   const { data: trip, isLoading } = useQuery(tripQuery(id));
   const driverId = trip?.driver_id ?? "";
@@ -82,15 +86,31 @@ function TripDetail() {
 
   const book = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase.rpc("book_trip", message.trim() ? { _trip_id: id, _seats: seats, _message: message.trim() } : { _trip_id: id, _seats: seats });
+      const { data, error } = await supabase.rpc("book_trip", message.trim() ? { _trip_id: id, _seats: seats, _message: message.trim() } : { _trip_id: id, _seats: seats });
+      if (error) throw error;
+      return data as string;
+    },
+    onSuccess: () => {
+      toast.success("Demande envoyée !", { description: "Préviens le ou la conducteur·rice pour une réponse plus rapide." });
+      setOpen(false);
+      setMessage("");
+      setAlertIntro("Demande envoyée ! Pour que le ou la conducteur·rice soit prévenu·e tout de suite et valide ta place au plus vite :");
+      setAlertOpen(true);
+      qc.invalidateQueries({ queryKey: ["my-booking"] });
+      qc.invalidateQueries({ queryKey: ["trips"] });
+    },
+    onError: (e) => toast.error(friendlyError(e)),
+  });
+
+  const adminDelete = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase.from("trips").delete().eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success("Demande envoyée !", { description: "Le ou la conducteur·rice va te répondre très vite." });
-      setOpen(false);
-      setMessage("");
-      qc.invalidateQueries({ queryKey: ["my-booking"] });
+      toast.success("Annonce supprimée.");
       qc.invalidateQueries({ queryKey: ["trips"] });
+      navigate({ to: "/admin" });
     },
     onError: (e) => toast.error(friendlyError(e)),
   });
@@ -280,9 +300,20 @@ function TripDetail() {
                   <Link to="/mes-trajets" search={{ onglet: "annonces" }}>Gérer mon annonce</Link>
                 </Button>
               ) : activeBooking ? (
-                <div className={`rounded-xl border p-3 text-sm ${confirmed ? "border-success/30 bg-success/10 text-success-strong" : "border-warning/30 bg-warning/10 text-warning-strong"}`}>
-                  Ta réservation ({myBooking!.seats} place{myBooking!.seats > 1 ? "s" : ""}) : <strong>{STATUS_LABEL[myBooking!.status]}</strong>
-                </div>
+                <>
+                  <div className={`rounded-xl border p-3 text-sm ${confirmed ? "border-success/30 bg-success/10 text-success-strong" : "border-warning/30 bg-warning/10 text-warning-strong"}`}>
+                    Ta réservation ({myBooking!.seats} place{myBooking!.seats > 1 ? "s" : ""}) : <strong>{STATUS_LABEL[myBooking!.status]}</strong>
+                  </div>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setAlertIntro(undefined);
+                      setAlertOpen(true);
+                    }}
+                  >
+                    <BellRing /> Prévenir par SMS / WhatsApp
+                  </Button>
+                </>
               ) : (
                 <Button size="lg" disabled={trip.seats_available === 0 || departed} onClick={() => requireVerified(() => setOpen(true))}>
                   {departed ? "Trajet passé" : trip.seats_available === 0 ? "Complet" : "Réserver"}

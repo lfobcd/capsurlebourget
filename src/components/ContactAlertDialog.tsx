@@ -114,7 +114,7 @@ export function ContactAlertDialog({ open, onOpenChange, bookingId, context, int
               )}
             </div>
             <p className="text-xs text-muted-foreground">
-              Le message part depuis ton téléphone et ton forfait. Alerte comptée : il t'en reste au maximum {CONTACT_RULES.maxPerBooking - 1} pour cette réservation.
+              Le message part depuis ton téléphone et ton forfait. Cette alerte est comptée ({CONTACT_RULES.maxPerBooking} maximum par réservation).
             </p>
           </div>
         )}
