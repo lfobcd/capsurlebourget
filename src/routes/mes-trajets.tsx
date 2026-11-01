@@ -1,16 +1,19 @@
+import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Car, MessageCircle, Phone, Trash2 } from "lucide-react";
+import { BellRing, Car, MessageCircle, Phone, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { friendlyError, useAuth } from "@/lib/auth";
 import { cityOrigin, type TripRow } from "@/lib/data";
 import { fmtDate, fmtTime } from "@/lib/format";
 import { formatEuro } from "@/lib/pricing";
 import { EmptyState, Page, PageHeader, RequireAuth, Tag } from "@/components/common";
+import { ContactAlertDialog } from "@/components/ContactAlertDialog";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import type { AlertContext } from "@/lib/contact";
 
 export const Route = createFileRoute("/mes-trajets")({
   validateSearch: z.object({ onglet: z.enum(["reservations", "annonces"]).optional() }),
@@ -48,6 +51,7 @@ function MyTrips() {
   const { user } = useAuth();
   const uid = user!.id;
   const qc = useQueryClient();
+  const [alertFor, setAlertFor] = useState<{ bookingId: string; context: Omit<AlertContext, "senderName"> } | null>(null);
 
   const bookings = useQuery({
     queryKey: ["my-bookings", uid],
@@ -143,9 +147,30 @@ function MyTrips() {
                   <MessageCircle /> Message
                 </Button>
                 {(b.status === "pending" || b.status === "confirmed") && (
-                  <Button variant="destructive" size="sm" onClick={() => run.mutate(() => supabase.rpc("cancel_booking", { _booking_id: b.id }))}>
-                    Annuler
-                  </Button>
+                  <>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() =>
+                        setAlertFor({
+                          bookingId: b.id,
+                          context: {
+                            role: "passenger",
+                            recipientName: b.trip!.driver?.first_name ?? "",
+                            from: b.trip!.departure_city,
+                            dateLabel: fmtDate(b.trip!.departure_at),
+                            timeLabel: fmtTime(b.trip!.departure_at),
+                            seats: b.seats,
+                          },
+                        })
+                      }
+                    >
+                      <BellRing /> Prévenir
+                    </Button>
+                    <Button variant="destructive" size="sm" onClick={() => run.mutate(() => supabase.rpc("cancel_booking", { _booking_id: b.id }))}>
+                      Annuler
+                    </Button>
+                  </>
                 )}
               </div>
             </div>
@@ -197,6 +222,28 @@ function MyTrips() {
                       <Button variant="ghost" size="sm" onClick={() => openChat(t.id, b.passenger_id)}>
                         <MessageCircle />
                       </Button>
+                      {b.status === "confirmed" && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>
+                            setAlertFor({
+                              bookingId: b.id,
+                              context: {
+                                role: "driver",
+                                recipientName: b.passenger?.first_name ?? "",
+                                from: t.departure_city,
+                                dateLabel: fmtDate(t.departure_at),
+                                timeLabel: fmtTime(t.departure_at),
+                                seats: b.seats,
+                                meetingAddress: t.meeting_address,
+                              },
+                            })
+                          }
+                        >
+                          <BellRing /> Prévenir
+                        </Button>
+                      )}
                       {b.status === "pending" && (
                         <>
                           <Button variant="success" size="sm" onClick={() => run.mutate(() => supabase.rpc("respond_booking", { _booking_id: b.id, _accept: true }))}>
@@ -221,6 +268,14 @@ function MyTrips() {
           </EmptyState>
         )}
       </TabsContent>
+      {alertFor && (
+        <ContactAlertDialog
+          open={!!alertFor}
+          onOpenChange={(o) => !o && setAlertFor(null)}
+          bookingId={alertFor.bookingId}
+          context={alertFor.context}
+        />
+      )}
     </Tabs>
   );
 }

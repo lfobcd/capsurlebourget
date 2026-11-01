@@ -1,8 +1,8 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Home, Search, Plus, MessageCircle, User, LogOut, Car } from "lucide-react";
+import { Home, Search, Plus, MessageCircle, User, LogOut, Car, ShieldAlert } from "lucide-react";
 import { EVENT, LEGAL } from "@/config/event";
-import { useAuth } from "@/lib/auth";
+import { useAuth, useIsAdmin } from "@/lib/auth";
 import { useUnreadCount } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -41,6 +41,7 @@ const NAV = [
 export function Header() {
   const { user, signOut } = useAuth();
   const unread = useUnreadCount(user?.id);
+  const isAdmin = useIsAdmin();
   return (
     <header className="sticky top-0 z-40 border-b border-hairline bg-background/75 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 lg:px-6">
@@ -73,6 +74,14 @@ export function Header() {
               )}
             </Link>
           ))}
+          {isAdmin && (
+            <Link
+              to="/admin"
+              className="relative rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground data-[status=active]:text-foreground"
+            >
+              Admin
+            </Link>
+          )}
         </nav>
 
         <div className="ml-auto flex items-center gap-2 lg:ml-2">
@@ -83,6 +92,13 @@ export function Header() {
           </Button>
           {user ? (
             <>
+              {isAdmin && (
+                <Button asChild variant="outline" size="icon" className="hidden md:inline-flex" aria-label="Administration">
+                  <Link to="/admin">
+                    <ShieldAlert />
+                  </Link>
+                </Button>
+              )}
               <Button asChild variant="outline" size="icon" className="hidden md:inline-flex" aria-label="Mon profil">
                 <Link to="/profil">
                   <User />

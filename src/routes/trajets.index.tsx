@@ -74,8 +74,9 @@ function SearchPage() {
   const { data: ratings } = useQuery(ratingsQuery(Array.from(new Set(results.map((t) => t.driver_id)))));
   const hasFilters = !!(s.ville || s.date || s.places || s.type || s.pmr || s.nonfumeur || s.cafe || s.axe);
 
-  const chip = (active: boolean, label: string, onClick: () => void) => (
+  const chip = (key: string, active: boolean, label: string, onClick: () => void) => (
     <button
+      key={key}
       type="button"
       onClick={onClick}
       aria-pressed={active}
@@ -129,22 +130,22 @@ function SearchPage() {
             <div>
               <Label>Type de trajet</Label>
               <div className="mt-2 flex flex-wrap gap-2">
-                {chip(!s.type, "Tous", () => set({ type: undefined }))}
-                {(Object.keys(TRIP_TYPES) as (keyof typeof TRIP_TYPES)[]).map((k) => chip(s.type === k, TRIP_TYPES[k], () => set({ type: s.type === k ? undefined : k })))}
+                {chip("all", !s.type, "Tous", () => set({ type: undefined }))}
+                {(Object.keys(TRIP_TYPES) as (keyof typeof TRIP_TYPES)[]).map((k) => chip(k, s.type === k, TRIP_TYPES[k], () => set({ type: s.type === k ? undefined : k })))}
               </div>
             </div>
             <div>
               <Label>Options</Label>
               <div className="mt-2 flex flex-wrap gap-2">
-                {chip(!!s.pmr, "♿ Accessible PMR", () => set({ pmr: s.pmr ? undefined : true }))}
-                {chip(!!s.nonfumeur, "🚭 Non-fumeur", () => set({ nonfumeur: s.nonfumeur ? undefined : true }))}
-                {chip(!!s.cafe, "☕ Café à bord", () => set({ cafe: s.cafe ? undefined : true }))}
+                {chip("pmr", !!s.pmr, "♿ Accessible PMR", () => set({ pmr: s.pmr ? undefined : true }))}
+                {chip("nonfumeur", !!s.nonfumeur, "🚭 Non-fumeur", () => set({ nonfumeur: s.nonfumeur ? undefined : true }))}
+                {chip("cafe", !!s.cafe, "☕ Café à bord", () => set({ cafe: s.cafe ? undefined : true }))}
               </div>
             </div>
             <div>
               <Label>Axe d'arrivée</Label>
               <div className="mt-2 flex flex-wrap gap-2">
-                {AXES.map((a) => chip(s.axe === a.id, a.name, () => set({ axe: s.axe === a.id ? undefined : a.id })))}
+                {AXES.map((a) => chip(a.id, s.axe === a.id, a.name, () => set({ axe: s.axe === a.id ? undefined : a.id })))}
               </div>
             </div>
           </div>
@@ -162,9 +163,9 @@ function SearchPage() {
             </p>
             <div className="flex items-center gap-2 text-sm">
               <span className="label-mono text-muted-foreground">Trier</span>
-              {chip(!s.tri || s.tri === "heure", "Heure", () => set({ tri: undefined }))}
-              {chip(s.tri === "prix", "Prix", () => set({ tri: "prix" }))}
-              {chip(s.tri === "places", "Places", () => set({ tri: "places" }))}
+              {chip("tri-heure", !s.tri || s.tri === "heure", "Heure", () => set({ tri: undefined }))}
+              {chip("tri-prix", s.tri === "prix", "Prix", () => set({ tri: "prix" }))}
+              {chip("tri-places", s.tri === "places", "Places", () => set({ tri: "places" }))}
             </div>
           </div>
           <EarlyTip className="mb-4" />

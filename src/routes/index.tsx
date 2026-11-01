@@ -2,8 +2,8 @@ import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { ArrowRight, CalendarDays, Car, MapPin, Search, Train, Users, HandHeart, MessageCircle, Clock } from "lucide-react";
-import { EVENT } from "@/config/event";
+import { ArrowRight, CalendarDays, Car, MapPin, Search, Train, Users, HandHeart, MessageCircle, Clock, Music2, Play } from "lucide-react";
+import { EVENT, MUSIC } from "@/config/event";
 import { CITIES } from "@/config/cities";
 import { ratingsQuery, upcomingTripsQuery, useTripsRealtime } from "@/lib/data";
 import { CostReminder, EarlyTip, EmptyState, FadeIn } from "@/components/common";
@@ -33,6 +33,7 @@ function Home() {
   const [ville, setVille] = useState("");
   const [date, setDate] = useState<string>(EVENT.dateISO);
   const [places, setPlaces] = useState(1);
+  const [radioLoaded, setRadioLoaded] = useState(false);
   const { data: trips, isLoading } = useQuery(upcomingTripsQuery());
   const preview = (trips ?? []).filter((t) => t.seats_available > 0).slice(0, 3);
   const { data: ratings } = useQuery(ratingsQuery(preview.map((t) => t.driver_id)));
@@ -189,6 +190,51 @@ function Home() {
             Le convoi commence avec toi : sois la première ou le premier à proposer des places depuis ta ville.
           </EmptyState>
         )}
+      </section>
+
+      {/* AUTORADIO POPULAIRE */}
+      <section className="mx-auto max-w-7xl px-4 py-12 lg:px-6">
+        <FadeIn>
+          <div className="glass-card relative overflow-hidden p-6 sm:p-10">
+            <div className="grid items-center gap-8 lg:grid-cols-[1fr_1.1fr]">
+              <div>
+                <p className="label-mono flex items-center gap-2 text-primary-glow">
+                  <Music2 className="h-4 w-4" /> La bande-son du convoi
+                </p>
+                <h2 className="title-display mt-3 text-4xl sm:text-6xl">
+                  {MUSIC.label} <span className="text-crimson">en route</span>
+                </h2>
+                <p className="mt-4 max-w-xl text-muted-foreground">{MUSIC.pitch}</p>
+                <p className="mt-2 text-sm font-semibold text-foreground/85">{MUSIC.track}</p>
+                {!radioLoaded && (
+                  <Button size="lg" className="mt-6" onClick={() => setRadioLoaded(true)}>
+                    <Play /> Lancer la musique
+                  </Button>
+                )}
+              </div>
+              <div className="aspect-video overflow-hidden rounded-2xl border border-hairline bg-background shadow-glow">
+                {radioLoaded ? (
+                  <iframe
+                    className="h-full w-full"
+                    src={`https://www.youtube-nocookie.com/embed/${MUSIC.youtubeId}?enablejsapi=1&autoplay=1&rel=0&modestbranding=1`}
+                    title={MUSIC.track}
+                    allow="autoplay; encrypted-media; picture-in-picture"
+                  />
+                ) : (
+                  <button
+                    onClick={() => setRadioLoaded(true)}
+                    className="grid h-full w-full place-items-center text-muted-foreground transition-colors hover:text-foreground"
+                    aria-label={`Lancer ${MUSIC.track}`}
+                  >
+                    <span className="grid h-16 w-16 place-items-center rounded-full bg-crimson text-primary-foreground shadow-glow">
+                      <Play className="h-6 w-6" />
+                    </span>
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </FadeIn>
       </section>
 
       {/* CTA */}

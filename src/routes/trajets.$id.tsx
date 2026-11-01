@@ -60,6 +60,7 @@ function TripDetail() {
   const [message, setMessage] = useState("");
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertIntro, setAlertIntro] = useState<string | undefined>(undefined);
+  const [newBookingId, setNewBookingId] = useState<string | undefined>(undefined);
 
   const { data: trip, isLoading } = useQuery(tripQuery(id));
   const driverId = trip?.driver_id ?? "";
