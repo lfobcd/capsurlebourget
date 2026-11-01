@@ -92,7 +92,8 @@ function TripDetail() {
       if (error) throw error;
       return data as string;
     },
-    onSuccess: () => {
+    onSuccess: (bid) => {
+      setNewBookingId(bid);
       toast.success("Demande envoyée !", { description: "Préviens le ou la conducteur·rice pour une réponse plus rapide." });
       setOpen(false);
       setMessage("");
