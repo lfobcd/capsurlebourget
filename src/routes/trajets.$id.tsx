@@ -6,6 +6,8 @@ import {
   Accessibility,
   ArrowLeft,
   ArrowRight,
+  BellRing,
+  Trash2,
   Briefcase,
   CarFront,
   CigaretteOff,
@@ -355,6 +357,18 @@ function TripDetail() {
               <Flag className="h-3.5 w-3.5" /> Signaler ce trajet
             </Link>
           )}
+          {isAdmin && (
+            <Button
+              variant="destructive"
+              size="sm"
+              disabled={adminDelete.isPending}
+              onClick={() => {
+                if (confirm("Supprimer définitivement cette annonce (action admin) ?")) adminDelete.mutate();
+              }}
+            >
+              <Trash2 /> Supprimer l'annonce (admin)
+            </Button>
+          )}
         </aside>
       </div>
 
@@ -402,6 +416,23 @@ function TripDetail() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {(newBookingId ?? myBooking?.id) && (
+        <ContactAlertDialog
+          open={alertOpen}
+          onOpenChange={setAlertOpen}
+          bookingId={(newBookingId ?? myBooking?.id)!}
+          intro={alertIntro}
+          context={{
+            role: "passenger",
+            recipientName: trip.driver?.first_name ?? "",
+            from: trip.departure_city,
+            dateLabel: fmtDateLong(trip.departure_at),
+            timeLabel: fmtTime(trip.departure_at),
+            seats: myBooking?.seats ?? seats,
+          }}
+        />
+      )}
     </Page>
   );
 }
