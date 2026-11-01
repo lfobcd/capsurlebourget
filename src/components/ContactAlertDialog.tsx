@@ -15,7 +15,7 @@ type Props = {
   onOpenChange: (o: boolean) => void;
   bookingId: string;
   context: Omit<AlertContext, "senderName">;
-  intro?: string;
+  intro?: string | undefined;
 };
 
 /** Fenêtre « Prévenir par SMS / WhatsApp » : règles à accepter, alerte comptée et enregistrée, puis liens préremplis. */
