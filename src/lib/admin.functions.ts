@@ -2,7 +2,10 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-type Ctx = { supabase: { rpc: (fn: "has_role", args: { _user_id: string; _role: "admin" }) => PromiseLike<{ data: boolean | null; error: unknown }> }; userId: string };
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/integrations/supabase/types";
+
+type Ctx = { supabase: SupabaseClient<Database>; userId: string };
 
 async function assertAdmin(ctx: Ctx) {
   const { data, error } = await ctx.supabase.rpc("has_role", { _user_id: ctx.userId, _role: "admin" });
@@ -22,7 +25,7 @@ export type AdminMember = {
 export const adminListMembers = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<AdminMember[]> => {
-    await assertAdmin(context as unknown as Ctx);
+    await assertAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 1000 });
     if (error) throw new Error(error.message);
@@ -46,7 +49,7 @@ export const adminDeleteMember = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => target.parse(input))
   .handler(async ({ data, context }) => {
-    await assertAdmin(context as unknown as Ctx);
+    await assertAdmin(context);
     if (data.userId === context.userId) throw new Error("Tu ne peux pas supprimer ton propre compte depuis l'administration.");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.auth.admin.deleteUser(data.userId);
@@ -58,7 +61,7 @@ export const adminSetSuspended = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => target.extend({ suspended: z.boolean() }).parse(input))
   .handler(async ({ data, context }) => {
-    await assertAdmin(context as unknown as Ctx);
+    await assertAdmin(context);
     if (data.userId === context.userId) throw new Error("Tu ne peux pas suspendre ton propre compte.");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.auth.admin.updateUserById(data.userId, { ban_duration: data.suspended ? "876000h" : "none" });
