@@ -8,6 +8,13 @@
       "when": 1793444155203,
       "tag": "0000_cap_sur_le_bourget_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793527611239,
+      "tag": "0001_admin_and_contact_alerts",
+      "breakpoints": true
     }
   ]
 }
