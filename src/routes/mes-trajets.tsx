@@ -3,7 +3,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { z } from "zod";
-import { BellRing, Car, MessageCircle, Phone, Trash2 } from "lucide-react";
+import { BellRing, Car, MessageCircle, Pencil, Phone, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { friendlyError, useAuth } from "@/lib/auth";
 import { cityOrigin, type TripRow } from "@/lib/data";
@@ -196,15 +196,22 @@ function MyTrips() {
                     {fmtDate(t.departure_at)} · {fmtTime(t.departure_at)} · {t.seats_available}/{t.seats_total} places libres
                   </p>
                 </div>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => {
-                    if (confirm("Supprimer cette annonce ? Les passagers perdront leur réservation.")) run.mutate(() => supabase.from("trips").delete().eq("id", t.id));
-                  }}
-                >
-                  <Trash2 /> Supprimer l'annonce
-                </Button>
+                <div className="flex gap-2">
+                  <Button asChild variant="outline" size="sm">
+                    <Link to="/proposer" search={{ id: t.id }}>
+                      <Pencil /> Modifier
+                    </Link>
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => {
+                      if (confirm("Supprimer cette annonce ? Les passagers perdront leur réservation.")) run.mutate(() => supabase.from("trips").delete().eq("id", t.id));
+                    }}
+                  >
+                    <Trash2 /> Supprimer l'annonce
+                  </Button>
+                </div>
               </div>
               <div className="mt-4 grid gap-2">
                 {t.bookings.filter((b) => b.status !== "cancelled").map((b) => (

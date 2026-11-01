@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { z } from "zod";
 import { AlertTriangle } from "lucide-react";
@@ -8,8 +8,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { CITIES, findCity } from "@/config/cities";
 import { EVENT, LUGGAGE, TRIP_TYPES, VIBES } from "@/config/event";
 import { friendlyError, useAuth } from "@/lib/auth";
+import { tripQuery } from "@/lib/data";
 import { exceedsCap, formatEuro, priceCap } from "@/lib/pricing";
-import { CostReminder, EarlyTip, Page, PageHeader, RequireAuth } from "@/components/common";
+import { CostReminder, EarlyTip, Page, PageHeader, RequireAuth, Spinner } from "@/components/common";
 import { PriceCalculator } from "@/components/PriceCalculator";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +20,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/proposer")({
+  validateSearch: z.object({ id: z.string().uuid().optional() }),
   head: () => ({
     meta: [
       { title: "Proposer un trajet vers le Bourget — Cap sur le Bourget" },
@@ -27,16 +29,19 @@ export const Route = createFileRoute("/proposer")({
       { property: "og:description", content: "Remplis tes sièges vides et rejoins le convoi solidaire vers le Bourget." },
     ],
   }),
-  component: () => (
-    <Page>
-      <PageHeader eyebrow="Conducteur·rice" title="Proposer un" highlight="trajet">
-        Partage tes places libres. Le prix est plafonné pour rester un simple partage des frais.
-      </PageHeader>
-      <RequireAuth requireVerified reason="Connecte-toi pour proposer un trajet : c'est gratuit et ça prend une minute.">
-        <ProposeForm />
-      </RequireAuth>
-    </Page>
-  ),
+  component: () => {
+    const { id } = Route.useSearch();
+    return (
+      <Page>
+        <PageHeader eyebrow="Conducteur·rice" title={id ? "Modifier mon" : "Proposer un"} highlight="trajet">
+          {id ? "Mets à jour les détails de ton trajet." : "Partage tes places libres. Le prix est plafonné pour rester un simple partage des frais."}
+        </PageHeader>
+        <RequireAuth requireVerified reason="Connecte-toi pour proposer un trajet : c'est gratuit et ça prend une minute.">
+          <ProposeForm editId={id} />
+        </RequireAuth>
+      </Page>
+    );
+  },
 });
 
 const formSchema = z
@@ -70,10 +75,11 @@ const formSchema = z
       ctx.addIssue({ code: "custom", path: ["price_per_seat"], message: `Prix au-dessus du plafond (${formatEuro(priceCap(v.distance_km))} pour ${v.distance_km} km).` });
   });
 
-function ProposeForm() {
+function ProposeForm({ editId }: { editId: string | undefined }) {
   const { user } = useAuth();
   const navigate = useNavigate();
   const qc = useQueryClient();
+  const { data: existing, isLoading: loadingExisting } = useQuery({ ...tripQuery(editId ?? ""), enabled: !!editId });
   const [f, setF] = useState({
     departure_city: "",
     meeting_address: "",
@@ -94,11 +100,38 @@ function ProposeForm() {
     vibes: [] as string[],
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [prefilled, setPrefilled] = useState(false);
   const up = <K extends keyof typeof f>(k: K, v: (typeof f)[K]) => setF((p) => ({ ...p, [k]: v }));
+
+  useEffect(() => {
+    if (!existing || prefilled) return;
+    setF({
+      departure_city: existing.departure_city,
+      meeting_address: existing.meeting_address,
+      waypoints: existing.waypoints.join(", "),
+      departure_at: existing.departure_at.slice(0, 16),
+      return_at: existing.return_at ? existing.return_at.slice(0, 16) : "2026-11-07T19:30",
+      trip_type: existing.trip_type,
+      seats_total: existing.seats_total,
+      vehicle: existing.vehicle ?? "",
+      price_per_seat: Number(existing.price_per_seat),
+      distance_km: existing.distance_km,
+      description: existing.description ?? "",
+      luggage: existing.luggage,
+      non_smoking: existing.non_smoking,
+      pets: existing.pets,
+      pmr: existing.pmr,
+      music: existing.music,
+      vibes: existing.vibes,
+    });
+    setPrefilled(true);
+  }, [existing, prefilled]);
 
   const cap = priceCap(f.distance_km);
   const overCap = f.distance_km > 0 && exceedsCap(f.price_per_seat, f.distance_km);
   const cityMatch = useMemo(() => findCity(f.departure_city), [f.departure_city]);
+
+  const bookedSeats = existing ? existing.seats_total - existing.seats_available : 0;
 
   const create = useMutation({
     mutationFn: async () => {
@@ -113,44 +146,66 @@ function ProposeForm() {
         setErrors(errs);
         throw new Error("Quelques champs sont à corriger.");
       }
+      if (editId && parsed.data.seats_total < bookedSeats) {
+        setErrors({ seats_total: `Tu ne peux pas descendre sous ${bookedSeats} place(s), déjà réservée(s).` });
+        throw new Error("Quelques champs sont à corriger.");
+      }
       setErrors({});
       const v = parsed.data;
+      const payload = {
+        departure_city: v.departure_city,
+        meeting_address: v.meeting_address,
+        waypoints: v.waypoints,
+        departure_at: new Date(v.departure_at).toISOString(),
+        return_at: v.return_at ? new Date(v.return_at).toISOString() : null,
+        trip_type: v.trip_type,
+        seats_total: v.seats_total,
+        vehicle: v.vehicle || null,
+        price_per_seat: v.price_per_seat,
+        distance_km: v.distance_km,
+        description: v.description || null,
+        luggage: f.luggage,
+        non_smoking: f.non_smoking,
+        pets: f.pets,
+        pmr: f.pmr,
+        music: f.music,
+        vibes: f.vibes,
+        axis: cityMatch?.axis ?? null,
+      };
+      if (editId) {
+        const { error } = await supabase
+          .from("trips")
+          .update({ ...payload, seats_available: v.seats_total - bookedSeats })
+          .eq("id", editId)
+          .eq("driver_id", user!.id);
+        if (error) throw error;
+        return editId;
+      }
       const { data, error } = await supabase
         .from("trips")
-        .insert({
-          driver_id: user!.id,
-          departure_city: v.departure_city,
-          meeting_address: v.meeting_address,
-          waypoints: v.waypoints,
-          departure_at: new Date(v.departure_at).toISOString(),
-          return_at: v.return_at ? new Date(v.return_at).toISOString() : null,
-          trip_type: v.trip_type,
-          seats_total: v.seats_total,
-          seats_available: v.seats_total,
-          vehicle: v.vehicle || null,
-          price_per_seat: v.price_per_seat,
-          distance_km: v.distance_km,
-          description: v.description || null,
-          luggage: f.luggage,
-          non_smoking: f.non_smoking,
-          pets: f.pets,
-          pmr: f.pmr,
-          music: f.music,
-          vibes: f.vibes,
-          axis: cityMatch?.axis ?? null,
-        })
+        .insert({ ...payload, driver_id: user!.id, seats_available: v.seats_total })
         .select("id")
         .single();
       if (error) throw error;
       return data.id;
     },
     onSuccess: (id) => {
-      toast.success("Trajet publié !", { description: "Merci pour ta solidarité. Les demandes arriveront dans « Mes trajets »." });
+      toast.success(editId ? "Trajet mis à jour !" : "Trajet publié !", editId ? undefined : { description: "Merci pour ta solidarité. Les demandes arriveront dans « Mes trajets »." });
       qc.invalidateQueries({ queryKey: ["trips"] });
       navigate({ to: "/trajets/$id", params: { id } });
     },
     onError: (e) => toast.error(friendlyError(e)),
   });
+
+  if (editId && loadingExisting)
+    return (
+      <div className="grid min-h-[40vh] place-items-center">
+        <Spinner />
+      </div>
+    );
+  if (editId && existing && existing.driver_id !== user?.id)
+    return <p className="text-sm text-muted-foreground">Tu ne peux modifier que tes propres trajets.</p>;
+  if (editId && !loadingExisting && !existing) return <p className="text-sm text-muted-foreground">Ce trajet n'existe plus.</p>;
 
   const Err = ({ k }: { k: string }) => (errors[k] ? <p className="text-xs text-primary-glow">{errors[k]}</p> : null);
 
@@ -238,6 +293,7 @@ function ProposeForm() {
             <div className="grid gap-1.5">
               <Label htmlFor="p-seats">Places (1 à 8) *</Label>
               <Input id="p-seats" type="number" min={1} max={8} value={f.seats_total} onChange={(e) => up("seats_total", Number(e.target.value))} />
+              {editId && bookedSeats > 0 && <p className="text-xs text-muted-foreground">{bookedSeats} déjà réservée(s), minimum.</p>}
               <Err k="seats_total" />
             </div>
             <div className="grid gap-1.5">
@@ -335,7 +391,7 @@ function ProposeForm() {
         />
         <CostReminder />
         <Button type="submit" size="lg" disabled={create.isPending || overCap}>
-          {create.isPending ? "Publication…" : "Publier mon trajet"}
+          {create.isPending ? "Enregistrement…" : editId ? "Enregistrer les modifications" : "Publier mon trajet"}
         </Button>
       </aside>
     </form>
