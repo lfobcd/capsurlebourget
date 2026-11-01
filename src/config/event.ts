@@ -46,7 +46,7 @@ export const LEGAL = {
     { label: "actionpopulaire.fr", href: "https://actionpopulaire.fr" },
   ],
   editor: "Collectif citoyen bénévole « Cap sur le Bourget »",
-  contactEmail: "contact@cap-sur-le-bourget.fr",
+  contactEmail: "contact@covoitcitoyen.site",
   host: "Lovable (hébergement de l'application)",
 } as const;
 

@@ -78,14 +78,14 @@ export function MusicPlayer() {
         whileHover={{ scale: 1.03 }}
         whileTap={{ scale: 0.96 }}
         onClick={() => setOpen((o) => !o)}
-        className="flex max-w-[240px] items-center gap-2 rounded-full border border-hairline-strong bg-card/90 py-1.5 pl-1.5 pr-4 shadow-glow backdrop-blur-xl"
+        className="flex items-center gap-2 rounded-full border border-hairline-strong bg-card/90 p-1.5 shadow-glow backdrop-blur-xl md:max-w-[240px] md:pr-4"
         aria-expanded={open}
         aria-label={`${MUSIC.label} : ${MUSIC.track}`}
       >
         <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-crimson text-primary-foreground">
           {playing ? <Music2 className="h-4 w-4 animate-pulse" /> : <Music2 className="h-4 w-4" />}
         </span>
-        <span className="min-w-0 text-left">
+        <span className="hidden min-w-0 text-left md:block">
           <span className="block truncate font-mono text-[9px] uppercase tracking-widest text-muted-foreground">{MUSIC.label}</span>
           <span className="block truncate text-xs font-semibold">{MUSIC.track}</span>
         </span>
